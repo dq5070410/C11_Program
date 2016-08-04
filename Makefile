@@ -12,7 +12,7 @@ Thread.o:Thread.cc
 
 
 .PHONY:
-    clean
+	clean
 
 clean:
-    rm Thread.o Thread
+	rm Thread.o Thread
