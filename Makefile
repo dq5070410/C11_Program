@@ -1,14 +1,10 @@
 ######################################
 
-# Generic Share Library makefile
+# Generic Execute bin makefile
 
 ######################################
 
- 
-
 #target you can change test to what you want
-
-# 共享库文件名， lib*.so
 
 TARGET  := Thread
 
@@ -18,13 +14,13 @@ TARGET  := Thread
 
 CC      := g++
 
-LIBS    :=
+LIBS    := -pthread
 
 LDFLAGS := 
 
 DEFINES := -DWEBRTC_LINUX
 
-INCLUDE := -I../src
+INCLUDE := -I./src/
 
 CFLAGS  := -ggdb -Wall -O3 -std=c++11 $(DEFINES) $(INCLUDE)
 
@@ -37,7 +33,7 @@ SHARE   := -fPIC -o
 
 # 源文件，自动找所有 .cc 和 .cpp 文件，并将目标定义为同名 .o 文件
 
-SOURCE  := $(wildcard *.cc ./linux/*.cc) $(wildcard *.cpp)
+SOURCE  := $(wildcard *.cc ./src/*.cc ./linux/*.cc) $(wildcard *.cpp)
 
 OBJS    := $(patsubst %.cc,%.o,$(patsubst %.cpp,%.o,$(SOURCE)))
 
@@ -64,17 +60,14 @@ rebuild: veryclean everything
                
 
 clean :
-
-    rm -fr *.o
+	rm -fr *.o
 
    
 
 veryclean : clean
-
-    rm -fr $(TARGET)
+	rm -fr $(TARGET)
 
  
 
 $(TARGET) : $(OBJS) 
-
-    $(CC) $(CXXFLAGS) $(SHARE) $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CC) $(CXXFLAGS) $(SHARE) $@ $(OBJS) $(LDFLAGS) $(LIBS)
