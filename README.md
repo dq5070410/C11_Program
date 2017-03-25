@@ -5,4 +5,5 @@
 3. thread
 4. mutex & lock
 5. condition_variable & sync
-6. corotine
+6. coroutine
+7. lambda
