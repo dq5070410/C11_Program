@@ -7,3 +7,4 @@
 5. condition_variable & sync
 6. coroutine
 7. lambda
+8. LR and RR
