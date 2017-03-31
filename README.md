@@ -8,3 +8,4 @@
 6. coroutine
 7. lambda
 8. LR and RR
+9. atomic
