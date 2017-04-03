@@ -27,4 +27,69 @@ void ProduceItem(ItemRepository *ir,int item)
 		std::cout << "Producer is waiting for an empty slot...\n";
 		(ir->repo_no_full).wait(lock);
 	}
+	(ir->item_buffer)[ir->write_position] = item;//写入产品
+	(ir->write_position)++;//写入位置后移
+	if(ir->write_position == kItemRepositorySize)
+		ir->write_position = 0;
+	(ir->repo_not_empty).notify_all();//通知消费者产品库不为空
+	lock.unlock();
+}
+
+int ConsumeItem(ItemRepository *ir)
+{
+	int data;
+	std::unique_lock<std::mutex> lock<ir->mtx>;
+	while(ir->write_position == ir->read_position)
+	{
+		std::cout << "Consumer is waiting for items...\n";
+		(ir->repo_not_empty).wait(lock);
+	}
+	data = (ir->item_buffer)[ir->read_position];
+	(ir->read_position)++;
+
+	if(ir->read_position >= kItemRepositorySize)
+		ir->read_position = 0;
+
+	(ir->repo_no_full).notify_all();
+	lock.unlock();
+
+	return data;
+
+}
+
+void ProducerTask()
+{
+	for(int i = 1; i<=kItemsToProduce;++i)
+	{
+		std::cout << "Produce the" << i << "^th itme..." << std::endl;
+		ProduceItem(&gItemRepository,i);
+	}
+}
+
+void ConsumerTask()
+{
+	static int cnt = 0;
+	while(1)
+	{
+		sleep(1);
+		int item = ConsumeItem(&gItemRepository);
+		std::cout << "Consume the " << item << "^th item" << std::endl;
+		if(++cnt == kItemsToProduce)
+			break;
+	}
+}
+
+void InitItemRepository(ItemRepository *ir)
+{
+	ir->write_position = 0;
+	ir->read_position = 0;
+}
+
+int main()
+{
+	InitItemRepository(&gItemRepository);
+	std::thread producer(ProducerTask);
+	std::thread consumer(ConsumerTask);
+	producer.join();
+	consumer.join();
 }
