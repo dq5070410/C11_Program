@@ -9,3 +9,5 @@
 7. lambda
 8. LR and RR
 9. atomic
+10. future && promise
+11. single_consumer_productor
