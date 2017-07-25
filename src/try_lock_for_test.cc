@@ -12,7 +12,7 @@ void fireworks()
 		std::cout << "-";
 	}
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-	std::cout << "*\n";
+	std::cout << "*\n" << std::endl;
 	mtx.unlock();
 }
 
@@ -23,7 +23,6 @@ int main()
 	{
 		threads[i] = std::thread(fireworks);
 	}
-	for(auto& th:threads) th.join();
-		
+	for(auto& th:threads) th.join();		
 	return 0;
 }
