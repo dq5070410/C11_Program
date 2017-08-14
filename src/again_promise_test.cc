@@ -11,6 +11,7 @@ void print_global_promise()
 	int x = fut.get();
 	std::cout << "Value:" << x << std::endl;
 }
+
 int main()
 {
 	std::thread th1(print_global_promise);
