@@ -3,18 +3,25 @@
 #include <thread>
 #include <future>
 
-void print_int(std::future<int>& fut)
+std::promise<int> prom;
+
+void print_global_promise()
 {
+	std::future<int> fut = prom.get_future();
 	int x = fut.get();
 	std::cout << "Value:" << x << std::endl;
 }
-
 int main()
 {
-	std::promise<int> prom;
-	std::future<int> fut = prom.get_future();
-	std::thread t(print_int,std::ref(fut));
+	std::thread th1(print_global_promise);
 	prom.set_value(10);
-	t.join();
+	th1.join();
+
+	prom = std::promise<int>();
+
+	std::thread th2 (print_global_promise);
+	prom.set_value(20);
+	th2.join();
+
 	return 0;
 }
