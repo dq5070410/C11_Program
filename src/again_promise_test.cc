@@ -2,27 +2,28 @@
 #include <functional>
 #include <thread>
 #include <future>
+#include <exception>
 
-std::promise<int> prom;
-
-void print_global_promise()
+void get_int(std::promise<int> prom)
 {
-	std::future<int> fut = prom.get_future();
-	int x = fut.get();
-	std::cout << "Value:" << x << std::endl;
+	int x;
+	std::cout << "Please input a integer value: ";
+	std::cin.exception(std::ios::failbit);
+	try{
+		std::cin >> x;
+		prom.set_value(x);
+	}catch(std::exception&){
+		prom.set_exception(std::current_exception());
+	}
 }
 
-int main()
+void print_int(std::future<int>& fut)
 {
-	std::thread th1(print_global_promise);
-	prom.set_value(10);
-	th1.join();
-
-	prom = std::promise<int>();
-
-	std::thread th2 (print_global_promise);
-	prom.set_value(20);
-	th2.join();
-
-	return 0;
+	try{
+		int x = fut.get();
+		std::cout << "Value:" << x << std::endl;
+	}catch(std::exception& e)
+	{
+		std::cout << "[exception caught:" << e.what() << "]"\n;
+	}
 }
