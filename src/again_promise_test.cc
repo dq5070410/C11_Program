@@ -24,7 +24,7 @@ void print_int(std::future<int>& fut)
 		std::cout << "Value:" << x << std::endl;
 	}catch(std::exception& e)
 	{
-		std::cout << "[exception caught:" << e.what() << "]"\n;
+		std::cout << "[exception caught:" << e.what() << "]\n";
 	}
 }
 
@@ -38,6 +38,6 @@ int main()
 
 	th1.join();
 	th2.join();
-	
+
 	return 0;
 }
