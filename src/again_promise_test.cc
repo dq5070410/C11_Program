@@ -27,3 +27,17 @@ void print_int(std::future<int>& fut)
 		std::cout << "[exception caught:" << e.what() << "]"\n;
 	}
 }
+
+int main()
+{
+	std::promise<int> prom;
+	std::future<int> fut = prom.get_future();
+
+	std::thread th1(get_int,std::ref(prom));
+	std::thread th2(print_int,std::ref(fut));
+
+	th1.join();
+	th2.join();
+	
+	return 0;
+}
