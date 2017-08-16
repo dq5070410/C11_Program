@@ -31,7 +31,7 @@ int main()
         threads[i] = std::thread(do_print_id, i);
 
     std::cout << "10 threads ready to race...\n";
-    go(); // go!
+    go(); 
 
   for (auto & th:threads)
         th.join();
