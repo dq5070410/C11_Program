@@ -3,33 +3,29 @@
 #include <thread>
 #include <vector>
 
-std::atomic<bool> ready(false);
-std::atomic_flag winner = ATOMIC_FLAG_INIT;
+std::atomic_flag lock_stream = ATOMIC_FLAG_INIT
+std::stringstream ss;
 
-void countlm(int id)
+void append_number(int x)
 {
-	while(!ready)
-	{
-		std::this_thread::yield();
-	}
-	for(int i = 0;i<100000;i++)
+	while(lock_stream.test_and_set())
 	{
 
 	}
-	if(!winner.test_and_set())
-	{
-		std::cout << "thread #" << id << "won!\n";
-	}
-};
+	ss << " thread #" << x << "\n";
+	lock_stream.clear();
+}
 
 int main()
 {
 	std::vector<std::thread> threads;
-	std::cout << "spawning 10 threads that count to 1 millon...\n";
-	for(int i = 0;i <= 10;++i)
-		threads.push_back(std::thread(countlm,i));
-	ready = true;
-	for(auto & th:threads)
+	for(int i = 0;i<=10;i++)
+	{
+		threads.push_back(std::thread(append_number,i));
+	}
+	for(auto& th:threads)
 		th.join();
+
+	std::cout << ss.str() << std::endl;
 	return 0;
 }
