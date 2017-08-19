@@ -71,5 +71,22 @@ void ProduceTask()
 
 void ConsumerTask()
 {
-	
+	bool read_to_exit = false;
+	while(1)
+	{
+		sleep(1);
+		std::unique_lock<std::mutex> lock(gItemRepository.item_counter_mtx);
+		if(gItemRepository.item_counter < kItemsToProduce)
+		{
+			int item = ConsumeItem(gItemRepository);
+			++(gItemRepository.item_counter);
+			std::cout << "Consumer thread " << std::this_thread::get_id() << " is consuming the " << item << " ^th item" << std::endl;
+		}
+		else
+			read_to_exit = true;
+		lock.unlock();
+		if(read_to_exit)
+			break;
+	}
+	std::cout << "Consumer thread " << std::this_thread::get_id() << "is exiting..." << std::endl;
 }
