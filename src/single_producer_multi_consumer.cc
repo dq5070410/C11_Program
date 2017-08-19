@@ -78,7 +78,7 @@ void ConsumerTask()
 		std::unique_lock<std::mutex> lock(gItemRepository.item_counter_mtx);
 		if(gItemRepository.item_counter < kItemsToProduce)
 		{
-			int item = ConsumeItem(gItemRepository);
+			int item = ConsumeItem(&gItemRepository);
 			++(gItemRepository.item_counter);
 			std::cout << "Consumer thread " << std::this_thread::get_id() << " is consuming the " << item << " ^th item" << std::endl;
 		}
@@ -96,4 +96,19 @@ void InitItemRepository(ItemRepository *ir)
 	ir->write_position = 0;
 	ir->read_position = 0;
 	ir->item_counter = 0;
+}
+
+int main()
+{
+	InitItemRepository(&gItemRepository);
+	std::thread producer(ProduceTask);
+	std::thread consumer1(ProduceTask);
+	std::thread consumer2(ProduceTask);
+	std::thread consumer3(ProduceTask);
+
+	producer.join();
+	consumer1.join();
+	consumer2.join();
+	consumer3.join();
+	return 0;
 }
