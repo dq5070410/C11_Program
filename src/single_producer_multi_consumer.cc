@@ -90,3 +90,10 @@ void ConsumerTask()
 	}
 	std::cout << "Consumer thread " << std::this_thread::get_id() << "is exiting..." << std::endl;
 }
+
+void InitItemRepository(ItemRepository *ir)
+{
+	ir->write_position = 0;
+	ir->read_position = 0;
+	ir->item_counter = 0;
+}
