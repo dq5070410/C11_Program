@@ -20,3 +20,21 @@ struct ItemRepository{
 } gItemRepository;
 
 typedef struct ItemRepository ItemRepository;
+
+void ProduceItem(ItemRepository *ir, int item)
+{
+	std::unique_lock<std::mutex> lock(ir->mtx);
+	while((ir->write_position + 1) % kItemRepositorySize == ir->read_position)
+	{
+		std::cout << "ItemRepository is full,waitinf for an empty slot...\n";
+		(ir->repo_not_full).wait(lock);
+	}
+
+	(ir->item_buffer)[ir->write_position] = item;
+	(ir->write_position)++;
+
+	if(ir->write_position == kItemRepositorySize)
+		ir->write_position = 0;
+	(ir->repo_not_empty).notify_all();
+	lock.unlock();
+}
