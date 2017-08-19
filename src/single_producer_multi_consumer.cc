@@ -26,7 +26,7 @@ void ProduceItem(ItemRepository *ir, int item)
 	std::unique_lock<std::mutex> lock(ir->mtx);
 	while((ir->write_position + 1) % kItemRepositorySize == ir->read_position)
 	{
-		std::cout << "ItemRepository is full,waitinf for an empty slot...\n";
+		std::cout << "ItemRepository is full,waiting for an empty slot...\n";
 		(ir->repo_not_full).wait(lock);
 	}
 
@@ -37,4 +37,24 @@ void ProduceItem(ItemRepository *ir, int item)
 		ir->write_position = 0;
 	(ir->repo_not_empty).notify_all();
 	lock.unlock();
+}
+
+int ConsumeItem(ItemRepository *ir)
+{
+	std::unique_lock<std::mutex> lock(ir->mtx);
+	while((ir->read_position) == ir->write_position)
+	{
+		std::cout << "ItemRepository is empty,waiting for a item...\n";
+		(ir->repo_not_empty).wait(lock);
+	}
+
+	int data = ir->item_buffer[ir->read_position];
+	(ir->read_position)++;
+
+	if(ir->read_position == kItemRepositorySize)
+		ir->read_position = 0;
+
+	(ir->repo_not_full).notify_all();
+	lock.unlock();
+	return data;
 }
