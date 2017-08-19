@@ -63,7 +63,7 @@ void ProduceTask()
 {
 	for(int i = 0;i<=kItemsToProduce;++i)
 	{
-		std::cout << "Producer thread " << std::this_thread::get_id() << "producing the " << i << "^th item..." << std::endl;
+		std::cout << "Producer thread " << std::this_thread::get_id() << " producing the " << i << "^th item..." << std::endl;
 		ProduceItem(&gItemRepository,i);
 	}
 	std::cout << "Producer thread " << std::this_thread::get_id() << " is exiting..." << std::endl;
@@ -88,7 +88,7 @@ void ConsumerTask()
 		if(read_to_exit)
 			break;
 	}
-	std::cout << "Consumer thread " << std::this_thread::get_id() << "is exiting..." << std::endl;
+	std::cout << "Consumer thread " << std::this_thread::get_id() << " is exiting..." << std::endl;
 }
 
 void InitItemRepository(ItemRepository *ir)
