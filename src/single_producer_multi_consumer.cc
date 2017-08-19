@@ -58,3 +58,18 @@ int ConsumeItem(ItemRepository *ir)
 	lock.unlock();
 	return data;
 }
+
+void ProduceTask()
+{
+	for(int i = 0;i<=kItemsToProduce;++i)
+	{
+		std::cout << "Producer thread " << std::this_thread::get_id() << "producing the " << i << "^th item..." << std::endl;
+		ProduceItem(&gItemRepository,i);
+	}
+	std::cout << "Producer thread " << std::this_thread::get_id() << " is exiting..." << std::endl;
+}
+
+void ConsumerTask()
+{
+	
+}
