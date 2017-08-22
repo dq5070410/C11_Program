@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <semaphone.h>
+#include <semaphore.h>
 #include <pthread.h>
 
 //任务接口，线程调用的函数
@@ -45,7 +45,7 @@ int tp_delete_lastjob(thread_pool *tp);
 
 void tp_destory(thread_pool *tp);
 
-void tp_thread_func(thread_pool *tp);
+void *tp_thread_func(thread_pool *tp);
 
-void *thread_func_producer*(thread_pool *tp);
+void *thread_func_producer(thread_pool *tp);
 #endif

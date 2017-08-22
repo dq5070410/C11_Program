@@ -16,7 +16,7 @@ thread_pool *tp_init(int thread_num)
 		printf("Error:allocate memory for thread_pool failed\n");
 		return NULL;
 	}
-	tp->thread_num = thread_num;
+	tp->threads_num = thread_num;
 	tp->threads = (pthread_t*)malloc(thread_num * sizeof(pthread_t));
 	if(NULL == tp->threads)
 	{
@@ -43,6 +43,8 @@ int tp_job_queue_init(thread_pool *tp)
 	tp->job_queue->head = NULL;
 	tp->job_queue->tail = NULL;
 	tp->job_queue->num = 0;
+
+	return 0;
 }
 
 void *tp_thread_func(thread_pool *tp)
@@ -131,7 +133,7 @@ int tp_delete_lastjob(thread_pool *tp)
 	return 0;
 }
 
-itn tp_add_work(thread_pool *tp,void *(func_p)(void *),void *arg)
+int tp_add_work(thread_pool *tp,void *(func_p)(void *),void *arg)
 {
 	thread_pool_job *new_job = (thread_pool_job *)malloc(sizeof(thread_pool_job));
 	if(NULL == new_job)
@@ -140,7 +142,7 @@ itn tp_add_work(thread_pool *tp,void *(func_p)(void *),void *arg)
 		exit(1);
 	}
 	new_job->function = func_p;
-	new_job->arg_buf = arg;
+	new_job->arg = arg;
 	pthread_mutex_lock(&mutex);
 	tp_job_queue_add(tp,new_job);
 	pthread_mutex_unlock(&mutex);
